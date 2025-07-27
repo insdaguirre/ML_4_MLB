@@ -17,7 +17,8 @@ from pathlib import Path
 import time
 from typing import Dict, Any
 
-from .baseball_env import create_env
+from .baseball_env import create_env, BaseballBetEnv
+from ..data.data_pipeline import MLBDataPipeline
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -71,16 +72,26 @@ class CustomPPO(PPO):
     def __init__(self, *args, **kwargs):
         # Override network architecture
         kwargs['policy_kwargs'] = {
-            'net_arch': [dict(pi=[128, 64], vf=[128, 64])],
-            'activation_fn': nn.ReLU,
-            'final_activation_fn': nn.Tanh
+            'net_arch': dict(pi=[128, 64], vf=[128, 64]),
+            'activation_fn': nn.ReLU
         }
         super().__init__(*args, **kwargs)
 
 def create_training_env(data_dir: str = "data", num_envs: int = 6):
     """Create vectorized training environment"""
-    # Create base environment
-    env = create_env(data_dir, num_envs)
+    # Create environment factory functions
+    def make_env():
+        data_pipeline = MLBDataPipeline(data_dir)
+        return BaseballBetEnv(
+            data_pipeline=data_pipeline,
+            initial_bankroll=10000.0,
+            num_sims=1000,
+            max_games=162
+        )
+    
+    # Create DummyVecEnv with factory functions
+    from stable_baselines3.common.vec_env import DummyVecEnv
+    env = DummyVecEnv([make_env for _ in range(num_envs)])
     
     # Wrap with normalization
     env = VecNormalize(
@@ -95,7 +106,19 @@ def create_training_env(data_dir: str = "data", num_envs: int = 6):
 
 def create_eval_env(data_dir: str = "data", num_envs: int = 2):
     """Create evaluation environment"""
-    env = create_env(data_dir, num_envs)
+    # Create environment factory functions
+    def make_env():
+        data_pipeline = MLBDataPipeline(data_dir)
+        return BaseballBetEnv(
+            data_pipeline=data_pipeline,
+            initial_bankroll=10000.0,
+            num_sims=1000,
+            max_games=162
+        )
+    
+    # Create DummyVecEnv with factory functions
+    from stable_baselines3.common.vec_env import DummyVecEnv
+    env = DummyVecEnv([make_env for _ in range(num_envs)])
     
     # Wrap with normalization (but don't update stats during eval)
     env = VecNormalize(

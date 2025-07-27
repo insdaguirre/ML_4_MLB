@@ -203,17 +203,15 @@ class VecBaseballEnv:
         self.action_space = self.envs[0].action_space
         self.observation_space = self.envs[0].observation_space
         
-    def reset(self) -> Tuple[np.ndarray, List[Dict]]:
+    def reset(self) -> np.ndarray:
         """Reset all environments"""
         states = []
-        infos = []
         
         for env in self.envs:
-            state, info = env.reset()
+            state, _ = env.reset()
             states.append(state)
-            infos.append(info)
         
-        return np.array(states), infos
+        return np.array(states)
     
     def step(self, actions: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, List[Dict]]:
         """Step all environments"""

@@ -1,0 +1,22 @@
+# MLB Betting RL System - Environment Variables
+# Copy this file to .env and fill in your API keys
+
+# The Odds API (Required for live odds)
+ODDS_API_KEY=your_odds_api_key_here
+
+# Baseball Savant API (Optional for advanced stats)
+SAVANT_API_KEY=your_savant_api_key_here
+
+# Telegram Bot (Optional for notifications)
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token_here
+TELEGRAM_CHAT_ID=your_chat_id_here
+
+# Slack Webhook (Optional for notifications)
+SLACK_WEBHOOK_URL=your_slack_webhook_url_here
+
+# Database settings
+DATABASE_PATH=data/betting_log.db
+
+# Training settings
+MODEL_PATH=models/simple_mlb_ppo_final
+TRAINING_TIMESTEPS=2000000 
