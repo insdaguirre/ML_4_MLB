@@ -1,0 +1,57 @@
+# Training Configuration for MLB Betting RL System
+
+# Environment settings
+environment:
+  num_envs: 6  # Exactly 6 cores as specified
+  initial_bankroll: 10000.0
+  num_sims: 1000
+  max_games: 162
+
+# PPO training parameters
+training:
+  total_timesteps: 2000000  # 2M steps as specified
+  learning_rate: 3e-4
+  batch_size: 64
+  n_steps: 2048
+  n_epochs: 10
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_range: 0.2
+  ent_coef: 0.01
+  vf_coef: 0.5
+  max_grad_norm: 0.5
+
+# Network architecture (tiny network as specified)
+network:
+  policy_net_arch: [128, 64]  # [Linear(128) → ReLU → Linear(64) → Tanh]
+  value_net_arch: [128, 64]
+  activation_fn: "relu"
+  final_activation_fn: "tanh"
+
+# Kelly betting parameters
+betting:
+  max_bet_fraction: 0.05  # 5% Kelly cap
+  max_payout: 0.20
+  confidence_threshold: 0.6
+  risk_free_rate: 0.02
+
+# Backtesting parameters
+backtesting:
+  start_year: 2010
+  end_year: 2023
+  train_window: 9
+  test_window: 1
+  num_mc_paths: 5000  # 5k Monte-Carlo paths
+
+# Live betting parameters
+live_betting:
+  odds_api_key: ""  # Set your API key
+  telegram_token: ""  # Set your Telegram token
+  telegram_chat_id: ""  # Set your chat ID
+  daily_analysis_time: "09:00"  # 9 AM ET as specified
+
+# Performance targets
+targets:
+  simulation_speed: 0.1  # 1 season ≈ 0.1s
+  training_speed: 10000  # 10k rollouts/hour on 6 cores
+  overnight_training: 8  # 6-8 hours overnight 
