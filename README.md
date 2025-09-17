@@ -1,6 +1,6 @@
 # ⚾ MLB Betting RL System
 
-**CPU-Optimized Reinforcement Learning System for MLB Betting with Kelly Criterion Bankroll Management**
+**CPU-Optimized Reinforcement Learning System for MLB Analytics with Kelly Criterion Bankroll Management**
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-CPU%20Only-red.svg)](https://pytorch.org/)
@@ -9,7 +9,7 @@
 
 ## 🎯 System Overview
 
-This is a **production-ready MLB betting system** that combines reinforcement learning (RL) with Monte-Carlo simulation and Kelly Criterion bankroll management. The system is specifically optimized for **CPU-only operation** on Intel i9 processors, making it accessible without expensive GPU hardware.
+This is a **production-ready MLB betting system** that combines reinforcement learning (RL) with Monte-Carlo simulation and Kelly Criterion bankroll management. The system is specifically optimized for **CPU-only operation**, making it accessible without expensive GPU hardware.
 
 ### 🏆 Key Features
 
