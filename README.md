@@ -1,6 +1,6 @@
-# ⚾ MLB Betting RL System
+# ⚾ MLB Sports Analytics RL System
 
-**CPU-Optimized Reinforcement Learning System for MLB Analytics with Kelly Criterion Bankroll Management**
+**CPU-Optimized Reinforcement Learning System for MLB Game Analytics and Decision Support**
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-CPU%20Only-red.svg)](https://pytorch.org/)
@@ -9,17 +9,17 @@
 
 ## 🎯 System Overview
 
-This is a **production-ready MLB betting system** that combines reinforcement learning (RL) with Monte-Carlo simulation and Kelly Criterion bankroll management. The system is specifically optimized for **CPU-only operation**, making it accessible without expensive GPU hardware.
+This is a **production-ready MLB sports analytics system** that combines reinforcement learning (RL) with Monte-Carlo simulation and risk-aware allocation analysis. The system is specifically optimized for **CPU-only operation** on Intel i9 processors, making it accessible without expensive GPU hardware.
 
 ### 🏆 Key Features
 
 - **🤖 RL Agent**: Proximal Policy Optimization (PPO) with tiny neural networks
 - **🎲 Monte-Carlo Simulation**: Vectorized game outcome simulation
-- **💰 Kelly Criterion**: Optimal bet sizing and bankroll management
+- **📐 Risk-Aware Allocation**: Kelly-style proportional sizing for scenario analysis
 - **⚡ CPU Optimized**: Pinned to 6 cores with single-threaded operations
 - **📊 Live Dashboard**: Streamlit web interface for real-time monitoring
 - **🔗 Real Data**: Integration with The Odds API for live MLB odds
-- **📈 Performance Tracking**: SQLite database for betting history and ROI
+- **📈 Performance Tracking**: SQLite database for experiment history and evaluation metrics
 
 ## 🏗️ System Architecture
 
@@ -30,7 +30,7 @@ This is a **production-ready MLB betting system** that combines reinforcement le
 │   Data Sources  │    │  Processing     │    │   Live System   │
 │                 │    │                 │    │                 │
 │ • The Odds API  │───▶│ • Feature Eng.  │───▶│ • RL Agent      │
-│ • Retrosheet    │    │ • Monte-Carlo   │    │ • Kelly System  │
+│ • Retrosheet    │    │ • Monte-Carlo   │    │ • Allocation    │
 │ • Statcast      │    │ • Simulation    │    │ • Dashboard     │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
                                 │
@@ -52,15 +52,15 @@ This is a **production-ready MLB betting system** that combines reinforcement le
 │                 │    │                 │    │ Engine          │
 │ • The Odds API  │───▶│ • Feature Eng.  │───▶│ • Monte-Carlo   │
 │ • Retrosheet    │    │ • Processing    │    │ • Game Outcomes │
-│ • Statcast      │    │ • Aggregation   │    │ • Bankroll Paths│
+│ • Statcast      │    │ • Aggregation   │    │ • Scenario Paths│
 └─────────────────┘    └─────────────────┘    └─────────────────┘
                                 │                       │
                                 ▼                       ▼
                        ┌─────────────────┐    ┌─────────────────┐
-                       │  RL Environment │    │   Kelly Layer   │
+                       │  RL Environment │    │ Allocation Layer│
                        │                 │    │                 │
-                       │ • BaseballBetEnv│───▶│ • Kelly System  │
-                       │ • PPO Agent     │    │ • Optimal Sizing│
+                       │ • BaseballEnv   │───▶│ • Kelly-style   │
+                       │ • PPO Agent     │    │ • Sizing/Policy │
                        │ • Action Space  │    │ • Risk Mgmt     │
                        └─────────────────┘    └─────────────────┘
                                 │                       │
@@ -81,11 +81,11 @@ This is a **production-ready MLB betting system** that combines reinforcement le
 ┌───────────────────────────────────────────────────────────────┐
 │                    Core Components                            │
 ├─────────────────┬─────────────────┬─────────────────┬─────────┤
-│ Data Pipeline   │ Simulation      │ RL Environment  │ Kelly   │
+│ Data Pipeline   │ Simulation      │ RL Environment  │ Sizing  │
 │                 │ Engine          │                 │ System  │
-│ • Feature Eng.  │ • Monte-Carlo   │ • BaseballBetEnv│ • Kelly │
+│ • Feature Eng.  │ • Monte-Carlo   │ • BaseballEnv   │ • Kelly │
 │ • Processing    │ • Game Outcomes │ • PPO Agent     │ • Risk  │
-│ • Aggregation   │ • Bankroll Paths│ • Action Space  │ • Sizing│
+│ • Aggregation   │ • Scenario Paths│ • Action Space  │ • Sizing│
 └─────────────────┴─────────────────┴─────────────────┴─────────┘
                                 │
                                 ▼
@@ -146,7 +146,7 @@ streamlit run app.py --server.port 8501
 ### Run Analysis
 
 ```bash
-# Run daily betting analysis
+# Run daily analytics
 python -c "
 from src.live_betting import LiveBettingLauncher
 launcher = LiveBettingLauncher('models/mlb_ppo_production_final.zip')
@@ -158,7 +158,7 @@ launcher.run_daily_analysis()
 
 ### 1. Data Collection & Processing
 
-**Justification**: Real-time odds data is essential for live betting. The Odds API provides reliable, structured data with minimal latency.
+**Justification**: Real-time odds data informs game analytics and scenario evaluation. The Odds API provides reliable, structured data with minimal latency.
 
 ```
 Data Pipeline Flow:
@@ -174,8 +174,8 @@ Data Pipeline Flow:
        │                     │                     │
        ▼                     ▼                     ▼
 ┌─────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│Advanced     │───▶│Performance      │───▶│Edge Calculation │
-│Metrics      │    │Indicators       │    │& Kelly Fraction │
+│Advanced     │───▶│Performance      │───▶│Edge Estimation  │
+│Metrics      │    │Indicators       │    │& Allocation     │
 └─────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
@@ -198,12 +198,12 @@ Simulation Process:
        │                     │                     │
        ▼                     ▼                     ▼
 ┌─────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│Win Prob.    │───▶│Expected Value   │───▶│Kelly Fraction   │
+│Win Prob.    │───▶│Expected Value   │───▶│Allocation      │
 └─────────────┘    └─────────────────┘    └─────────────────┘
        │                     │                     │
        ▼                     ▼                     ▼
 ┌─────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│Bankroll Path│───▶│Risk Assessment  │───▶│Bet Decision     │
+│Scenario Path│───▶│Risk Assessment  │───▶│Decision Support │
 └─────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
@@ -215,15 +215,15 @@ Simulation Process:
 
 ### 3. Reinforcement Learning Environment
 
-**Justification**: RL allows the system to learn optimal betting strategies through trial and error, adapting to changing market conditions and improving over time.
+**Justification**: RL allows the system to learn optimal decision policies (e.g., recommendation strength) through trial and error, adapting to changing conditions over time.
 
 ```
 RL Environment Design:
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │Observation      │───▶│Action Space     │───▶│Reward Function  │
-│Space:           │    │Bet Fraction     │    │Bankroll Delta   │
+│Space:           │    │Allocation Scale │    │Outcome Utility  │
 │[Game Features + │    │0.0 to 0.1       │    │Direct P&L       │
-│ Bankroll +      │    │(10% max bet)    │    │                 │
+│ Capital +       │    │(10% max alloc)  │    │                 │
 │ Market State]   │    │                 │    │                 │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
        │                       │                       │
@@ -236,21 +236,21 @@ RL Environment Design:
 ```
 
 **Environment Features**:
-- **Continuous action space** for precise bet sizing
-- **Realistic constraints** (Kelly limits, bankroll management)
+- **Continuous action space** for precise allocation scaling
+- **Realistic constraints** (allocation caps, risk management)
 - **Delayed rewards** (game outcomes take time)
 - **Non-stationary environment** (odds change, teams improve)
 
-### 4. Kelly Criterion Integration
+### 4. Kelly-Style Allocation Integration
 
 **Justification**: Kelly Criterion maximizes long-term growth rate while managing risk. It's mathematically optimal for repeated betting scenarios.
 
 ```
-Kelly Formula Implementation:
+Kelly-Style Sizing (for analysis):
 ┌────────────────────────────────────────────────────────────┐
-│                    Kelly Formula                           │
+│                Proportional Sizing Formula                 │
 │                                                            │
-│  Kelly Fraction = (bp - q) / b                             │
+│  Fraction = (bp - q) / b                                   │
 │                                                            │
 │  where:                                                    │
 │  • b = decimal odds - 1                                    │
@@ -261,20 +261,20 @@ Kelly Formula Implementation:
 ┌────────────────────────────────────────────────────────────┐
 │                  Risk Management                           │
 │                                                            │
-│  Max Bet = min(Kelly Fraction, 0.05)  # 5% cap             │
-│  Min Bet = max(calculated_bet, 0.001)  # $1 minimum        │
+│  Max Allocation = min(Fraction, 0.05)  # 5% cap            │
+│  Min Allocation = max(calculated, 0.001)                   │
 └────────────────────────────────────────────────────────────┘
 ```
 
 **Risk Constraints**:
-- **5% maximum bet** to prevent catastrophic losses
-- **Minimum bet size** for practical implementation
-- **Bankroll protection** during losing streaks
+- **5% maximum allocation** to prevent outsized exposure
+- **Minimum allocation** threshold for practicality
+- **Capital protection** during adverse periods
 - **Dynamic adjustment** based on performance
 
-### 5. Live Betting System
+### 5. Live Analytics System
 
-**Justification**: Automated execution ensures consistent application of the strategy, removes emotional bias, and captures opportunities 24/7.
+**Justification**: Automated analytics ensure consistent evaluation, reduce bias, and surface timely insights.
 
 ```
 Live System Flow:
@@ -284,7 +284,7 @@ Live System Flow:
        │                     │                       │
        ▼                     ▼                       ▼
 ┌─────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│Model        │───▶│Kelly Calculation│───▶│Decision Logic   │
+│Model        │───▶│Sizing Logic     │───▶│Decision Support │
 │Prediction   │    │                 │    │                 │
 └─────────────┘    └─────────────────┘    └─────────────────┘
        │                     │                       │
@@ -296,22 +296,22 @@ Live System Flow:
 ```
 
 **System Components**:
-- **Real-time odds polling** (every 5 minutes)
-- **Automated decision making** (no human intervention)
-- **Comprehensive logging** (all decisions and outcomes)
-- **Performance monitoring** (ROI, Sharpe ratio, win rate)
+- **Real-time data polling** (every 5 minutes)
+- **Automated recommendations** (human-in-the-loop optional)
+- **Comprehensive logging** (all recommendations and outcomes)
+- **Performance monitoring** (forecast skill, calibration, stability)
 
 ## 🎯 Performance Targets
 
-### Expected Results (Based on Backtesting)
+### Expected Results (Based on Retrospective Analysis)
 
 | Metric | Target | Justification |
 |--------|--------|---------------|
-| **ROI** | 8-12% annually | Conservative edge capture with risk management |
-| **Sharpe Ratio** | >1.5 | Risk-adjusted returns above market |
-| **Win Rate** | 52-55% | Slight edge over 50/50 with good odds |
-| **Max Drawdown** | <15% | Kelly Criterion limits exposure |
-| **Bet Frequency** | 15-25% of games | Selective betting on positive EV |
+| **Brier Score** | Low | Well-calibrated win probability estimates |
+| **Log Loss** | Low | Informative probabilities |
+| **Hit Rate** | >52% | Directional advantage on outcomes |
+| **Stability** | High | Robust across seasons |
+| **Coverage** | 15-25% of games | Selective recommendations |
 
 ### System Performance Metrics
 
@@ -324,18 +324,18 @@ Live System Flow:
 │  Model Size:        128→64→1 neurons (tiny network)        │
 │  Memory Usage:      <2GB RAM for full pipeline             │
 │  API Latency:       <100ms for odds retrieval              │
-│  Database Queries:  <10ms for betting history              │
+│  Database Queries:  <10ms for experiment history           │
 └────────────────────────────────────────────────────────────┘
 ```
 
-### Risk Management
+### Risk & Allocation Management
 
 ```python
 # Risk Parameters
-Max Bankroll Exposure: 5% per bet
-Maximum Daily Bets: 10 games
-Stop Loss: 20% bankroll decline
-Position Sizing: Kelly Fraction × 0.5 (conservative)
+Max Capital Allocation: 5% per recommendation
+Maximum Daily Recommendations: 10 games
+Drawdown Guard: 20% capital decline
+Position Sizing: Kelly-style Fraction × 0.5 (conservative)
 ```
 
 ## 🔧 Technical Implementation
@@ -368,12 +368,12 @@ torch.set_num_threads(6)
 Policy Network: [128 → ReLU → 64 → Tanh]
 Value Network: [128 → ReLU → 64 → Linear]
 Action Space: Continuous [0.0, 0.1]
-Observation Space: 15 features + bankroll state
+Observation Space: 15 features + capital state
 ```
 
 **Design Rationale**:
 - **Small networks** for CPU efficiency
-- **Continuous actions** for precise bet sizing
+- **Continuous actions** for precise allocation scaling
 - **Separate policy/value** for stable learning
 - **Bounded outputs** for risk management
 
@@ -418,14 +418,14 @@ python production_train.py
 0 9 * * * cd /path/to/MLB_ML && ./run_daily_analysis.sh
 ```
 
-### Monitoring & Alerts
+### Monitoring & Alerts (Analytics)
 
 ```python
 # Performance Monitoring
-Daily ROI Tracking
-Weekly Sharpe Ratio Calculation
-Monthly Drawdown Analysis
-Quarterly Strategy Review
+Daily Forecast Skill Tracking
+Weekly Calibration Analysis
+Monthly Stability/Drift Analysis
+Quarterly Model Review
 ```
 
 ## 🧪 Testing & Validation
@@ -446,7 +446,7 @@ Validation Metric: Out-of-sample ROI
 
 ```python
 # Stress Test Scenarios
-Market Crash: -30% bankroll simulation
+Market Shock: -30% capital simulation
 Losing Streak: 10 consecutive losses
 Odds Movement: Rapid line changes
 Data Quality: Missing/incomplete data
@@ -456,9 +456,9 @@ Data Quality: Missing/incomplete data
 
 ### Real-Time Monitoring
 
-- **Live odds integration** with The Odds API
-- **Real-time betting suggestions** with edge calculations
-- **Performance tracking** with ROI and Sharpe ratio
+- **Real-time data integration** with The Odds API
+- **Real-time recommendations** with edge estimates
+- **Performance tracking** with calibration and skill metrics
 - **Risk monitoring** with drawdown alerts
 - **Historical analysis** with detailed game logs
 
@@ -467,8 +467,8 @@ Data Quality: Missing/incomplete data
 ```python
 # Dashboard Sections
 1. System Status: API connectivity, model health
-2. Live Analysis: Current betting opportunities
-3. Performance: Historical ROI and statistics
+2. Live Analysis: Current game insights
+3. Performance: Historical calibration and skill
 4. Settings: Configuration and parameters
 5. Automation: Scheduled tasks and alerts
 ```
@@ -478,14 +478,14 @@ Data Quality: Missing/incomplete data
 ### Data Protection
 
 - **API key encryption** in environment variables
-- **Database encryption** for sensitive betting data
+- **Database encryption** for sensitive analytics data
 - **Access logging** for audit trails
 - **Backup systems** for data recovery
 
 ### Legal Compliance
 
-- **Paper trading mode** for testing
-- **Jurisdiction compliance** for live betting
+- **Sandbox mode** for testing
+- **Data provider compliance** for live analytics
 - **Tax reporting** integration
 - **Responsible gambling** limits
 
@@ -497,7 +497,7 @@ Data Quality: Missing/incomplete data
 2. **Advanced ML models** (XGBoost, Neural Networks)
 3. **Real-time streaming** (WebSocket integration)
 4. **Mobile app** (React Native dashboard)
-5. **Social features** (betting communities)
+5. **Collaboration features** (analyst workspaces)
 
 ### Research Areas
 
@@ -510,7 +510,7 @@ Data Quality: Missing/incomplete data
 
 ### Academic Papers
 
-- [Kelly Criterion for Optimal Betting](https://en.wikipedia.org/wiki/Kelly_criterion)
+- [Kelly Criterion (proportional allocation)](https://en.wikipedia.org/wiki/Kelly_criterion)
 - [PPO Algorithm](https://arxiv.org/abs/1707.06347)
 - [Monte Carlo Methods](https://en.wikipedia.org/wiki/Monte_Carlo_method)
 
@@ -558,7 +558,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## ⚠️ Disclaimer
 
-**This system is for educational and research purposes only. Sports betting involves risk and may result in financial loss. Always gamble responsibly and within your means. The authors are not responsible for any financial losses incurred through the use of this system.**
+**This system is for educational and research purposes in sports analytics. Do not use this project for real-money wagering. The authors are not responsible for any outcomes resulting from misuse.**
 
 ---
 
